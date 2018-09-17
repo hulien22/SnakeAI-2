@@ -1,0 +1,24 @@
+//Node.h
+#ifndef _NODEH
+#define _NODEH
+
+#include <vector>
+#include <stdlib.h>
+
+class Node {
+	int nInputs;
+
+public:
+	std::vector<double> vWeights;
+
+	Node(int inputs) : nInputs(inputs + 1) {
+		for (int i = 0; i < inputs + 1; ++i)
+			vWeights.push_back(std::rand() / (RAND_MAX + 2) - 1); // random between -1 and 1
+	};
+
+	Node(std::vector<double> weights) : nInputs(weights.size), vWeights(weights) {};
+
+};
+
+
+#endif
