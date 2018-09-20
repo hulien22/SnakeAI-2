@@ -14,8 +14,6 @@ class NeuralNetwork {
 
 	std::vector<NeuralLayer> vecLayers;
 public:
-	NeuralNetwork();
-
 	NeuralNetwork(int i, int o, int h, int nph);
 
 	// void CreateNetwork();
@@ -24,17 +22,17 @@ public:
 
 	int GetNumWeights() const;
 
-	void SetWeights(const std::vector<std::vector<std::vector<double>>> &weights);
+	void SetWeights(const std::vector<double> &weights);
 
-	std::vector<double> Calculate(const std::vector<double> &inputs);
+	std::vector<double> Calculate(const std::vector<double> &inputs) const;
 
-	inline double Sigmoid(double activation, double response)
+	inline static double Sigmoid(double activation)
 	{
-		return (1 / (1 + exp(-activation / response)));
+		return (1 / (1 + exp(-activation)));
 	}
-	inline double ReLU(double activation, double response)
+	inline static double ReLU(double activation)
 	{
-		return std::max(activation / response, 0.0);
+		return std::max(activation, 0.0);
 	}
 
 

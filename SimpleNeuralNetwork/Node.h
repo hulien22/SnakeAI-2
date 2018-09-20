@@ -11,8 +11,9 @@ class Node {
 public:
 	std::vector<double> vWeights;
 
-	Node(int inputs) : nInputs(inputs + 1) {
-		for (int i = 0; i < inputs + 1; ++i)
+	// TODO add bias??
+	Node(int inputs) : nInputs(inputs) {
+		for (int i = 0; i < inputs; ++i)
 			vWeights.push_back(std::rand() / (RAND_MAX + 2) - 1); // random between -1 and 1
 	};
 
