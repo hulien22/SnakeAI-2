@@ -40,6 +40,10 @@ public:
     inline Point getHead() {
         return snake.front();
     }
+
+    inline const std::deque<Point> &getSnake() {
+        return snake;
+    }
 private:
     void moveFruit();
 

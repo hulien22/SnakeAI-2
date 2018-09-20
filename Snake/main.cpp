@@ -2,7 +2,6 @@
 #include <iostream>
 #include <string>
 #include "board.h"
-#include "point.h"
 
 int main(int argc, char** argv) {
     Board game = Board(10,10,4);
@@ -38,6 +37,11 @@ int main(int argc, char** argv) {
         std::cout << goodMove << std::endl;
         std::cout << "Fruit location: " << fruit.x << " " << fruit.y << std::endl;
         std::cout << "Head location: " << head.x << " " << head.y << std::endl;
+        std::deque<Point> snake = game.getSnake();
+        std::cout << "snake body:" << std::endl;
+        for (const auto& p : snake) {
+            std::cout << "||" << p.x << " " << p.y << "||" << std::endl;
+        }
         std::cout << "Current length: " << game.getSize() << std::endl;
         
     }
