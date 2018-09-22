@@ -20,7 +20,9 @@ int main(int argc, char** argv) {
     std::vector<double> randWeights = nnet.GetWeights();
 
     for (int i=0; i<POPULATION_SIZE; ++i) {
-        for (size_t j=0; j < randWeights.size(); ++j) randWeights[j] = (double) std::rand() / (RAND_MAX + 2) - 1;
+        for (size_t j=0; j < randWeights.size(); ++j) {
+            randWeights[j] = ((double) std::rand() / (RAND_MAX)) * 2 - 1;
+        }
         genomes.emplace_back(randWeights,0);
     }
 
@@ -77,6 +79,10 @@ int main(int argc, char** argv) {
             
             }
             genomes[j].setFitness(fitnessAverage/5.0);
+            // for (size_t q=0; q<genomes[j].getWeights().size(); ++q) {
+            //     std::cout << genomes[j].getWeights()[q] << ", ";
+            // }
+            // std::cout << std::endl;
             // std::cout << "Fitness Score: " << genomes[j].getFitness() << " | Genome took " << totalSteps + steps << " steps, and grew to a size of " << size << std::endl;
             // std::cout << "*****************************************" << std::endl;
         }
