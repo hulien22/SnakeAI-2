@@ -17,7 +17,7 @@ public:
 			vWeights.push_back(std::rand() / (RAND_MAX + 2) - 1); // random between -1 and 1
 	};
 
-	Node(std::vector<double> weights) : nInputs(weights.size), vWeights(weights) {};
+	Node(std::vector<double> weights) : nInputs(weights.size()), vWeights(weights) {};
 
 };
 

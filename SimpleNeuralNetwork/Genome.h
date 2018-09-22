@@ -9,7 +9,7 @@ class Genome {
 
 public:
     // initialize fitness to 0
-    Genome() : fitness(0){};
+    Genome() : fitness(0) {};
 
     Genome(std::vector<double> w, double f) : weights(w), fitness(f) {};
 

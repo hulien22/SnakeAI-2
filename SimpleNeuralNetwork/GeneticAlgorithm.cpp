@@ -9,16 +9,16 @@ void GeneticAlgorithm::crossover(Genome& g1, Genome& g2) {
     std::vector<double> weights1 = g1.getWeights();
     std::vector<double> weights2 = g2.getWeights();
 
-    for (int i=0; i<weights1.size(); ++i) {
-        r = ((double) rand() / RAND_MAX);
-        if (r < crossoverRate)
-            std::swap(weights1[i],weights2[i]);
+
+    int cut = rand()%chromosomeLength;
+    for (size_t i=cut; i<weights1.size(); ++i) {
+        std::swap(weights1[i],weights2[i]);
     }
 }
 
 void GeneticAlgorithm::mutate(Genome& g) {
     std::vector<double> weights = g.getWeights();
-    for (int i=0; i<weights.size(); ++i) {
+    for (size_t i=0; i<weights.size(); ++i) {
         double r = ((double) rand() / RAND_MAX);
         if (r < mutationRate)
             weights[i] += ((double) rand() / RAND_MAX) * 2 - 1; // -1 to 1
@@ -38,9 +38,10 @@ int GeneticAlgorithm::rouletteWheelSelect(const std::vector<Genome>& pop, int po
 
 void GeneticAlgorithm::Step(std::vector<Genome>& pop) {
     std::sort(pop.begin(), pop.end());
-    int popsize = pop.size();
+    size_t popsize = pop.size();
 
     //TODO: calculate stats here from previous generation
+    bestGenome = pop.back();
 
     // kill off percentage of population
     pop.erase(pop.begin(), pop.begin() + floor(popsize * ELITISM_RATE));

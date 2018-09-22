@@ -2,43 +2,22 @@
 #ifndef _SETTINGSH
 #define _SETTINGSH
 
-#include <fstream>
-#include <string>
-#include <map>
+// define macros
+#define MUTATION_RATE 0.3
+#define CROSSOVER_RATE 0.7
+#define ELITISM_RATE 0.5
 
+#define NUMBER_OF_INPUTS 25
+#define NUMBER_OF_OUTPUTS 3
 
-class Settings {
-    std::ifstream file;
-    std::map<std::string, std::string> savedKeys;
-public:
-    Settings(const std::string &filename) {
-        file = std::ifstream(filename);
+#define HIDDEN_LAYERS 10
+#define HIDDEN_LAYER_SIZE 10
 
-        if (file) {
-            std::string key;
-            std::string value;
-            while (file) {
-                std::getline(file, key, '=');
-                std::getline(file, value, '\n');
-                size_t q1 = value.find_first_of("\"");
-                size_t q2 = value.find_last_of("\"");
-                if (q1 != std::string::npos && q2 != std::string::npos && q2 > q1) {
-                    value = value.substr(q1+1, q2-q1-1);
-                    savedKeys[key] = value;
-                }
-            }
-            file.close();
-        }
-        
-        //todo errors
-    };
+#define BOARD_X 20
+#define BOARD_Y 20
+#define INITIAL_SNAKE_SIZE 5
 
-    std::string getKey(std::string key) {
-        if (savedKeys.find(key) != savedKeys.end()) return savedKeys[key];
-        else return "KEY_NOT_FOUND";
-    }
-
-};
+#define POPULATION_SIZE 10
 
 
 #endif

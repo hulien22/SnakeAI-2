@@ -2,13 +2,21 @@
 #include "game.h"
 
 Game::Game(int w, int h, int s) : height(h), width(w), snakeSize(s), facing(DIR::RIGHT) {
-    // initialize random seed
-    srand (time(NULL));
 
     //TODO initialize the snake (in different locations?)
     for (int i = 0; i < s; ++i) {
         snake.push_front(Point(i,0));
     }
+    moveFruit();
+}
+
+void Game::reset(int s){
+    snake.clear();
+    snakeSize = s;
+    for (int i = 0; i < s; ++i) {
+        snake.push_front(Point(i,0));
+    }
+    facing = DIR::RIGHT;
     moveFruit();
 }
 
@@ -25,6 +33,7 @@ void Game::moveFruit() {
 }
 
 bool Game::move(int dir) {
+    // std::cout << dir << std::endl;
     Point head = snake.front();
     if (dir > DIR::RIGHT || dir < DIR::UP)
         dir = facing;
@@ -51,7 +60,7 @@ bool Game::move(int dir) {
         return false;
     
     // ignore the tail
-    if (std::find(snake.begin(), --snake.end(),head) != --snake.end())
+    if (std::find(snake.begin(), snake.end() - 1,head) != snake.end() - 1)
         return false;
     
     // valid location
@@ -68,7 +77,6 @@ bool Game::move(int dir) {
 
     return true;
 }
-
 
 /*
  * Returns a vector of input values that can be fed into the neural network
@@ -125,7 +133,7 @@ std::vector<double> Game::getInputVector() const {
     int count = 0;
     int headx = snake.front().x;
     int heady = snake.front().y;
-    std::cout << std::endl << "|| " << headx << " " << heady << " , " << swap << " " << xymod << " ||" << std::endl;
+    // std::cout << std::endl << "|| " << headx << " " << heady << " , " << swap << " " << xymod << " ||" << std::endl;
     for (int i=-2; i<3; ++i) {
         for (int j=-2; j<3; ++j) {
             if (i==0 && j==0) continue;
@@ -139,7 +147,7 @@ std::vector<double> Game::getInputVector() const {
                 tempy = (heady + -1 * xymod * j);
             }
 
-                std::cout << tempx << " " << tempy << " | " << j << " " << i << std::endl;
+                // std::cout << tempx << " " << tempy << " | " << j << " " << i << std::endl;
             if (tempx < 0 || tempx >= width || tempy < 0 || tempy >= height) {
                 vals[count++] = -1;
             } else if (std::find(snake.begin(), snake.end(), Point(tempx,tempy)) != snake.end()) {

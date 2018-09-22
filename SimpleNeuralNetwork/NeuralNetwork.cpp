@@ -1,7 +1,7 @@
 #include "NeuralNetwork.h"
 
 NeuralNetwork::NeuralNetwork(int i, int o, int h, int nph) : inputs(i), outputs(o), hiddenLayers(h), neuronsPerHidLayer(nph) {
-    for (int j=0; j<hiddenLayers-1; ++j) {
+    for (int j=0; j<hiddenLayers; ++j) {
         if (j==0)
             vecLayers.push_back(NeuralLayer(neuronsPerHidLayer,inputs));
         else
@@ -17,9 +17,9 @@ NeuralNetwork::NeuralNetwork(int i, int o, int h, int nph) : inputs(i), outputs(
 std::vector<double> NeuralNetwork::GetWeights() const {
     std::vector<double> weights;
 
-    for (int i=0; i<hiddenLayers; ++i) {
-        for (int j=0; j<vecLayers[i].vNodes.size(); ++j) {
-            for (int k=0; k<vecLayers[i].vNodes[j].vWeights.size(); ++k) {
+    for (int i=0; i<hiddenLayers + 1; ++i) {
+        for (size_t j=0; j<vecLayers[i].vNodes.size(); ++j) {
+            for (size_t k=0; k<vecLayers[i].vNodes[j].vWeights.size(); ++k) {
                 weights.push_back(vecLayers[i].vNodes[j].vWeights[k]);
             }
         }
@@ -31,8 +31,8 @@ std::vector<double> NeuralNetwork::GetWeights() const {
 int NeuralNetwork::GetNumWeights() const {
     int count = 0;
 
-    for (int i=0; i<hiddenLayers; ++i) {
-        for (int j=0; j<vecLayers[i].vNodes.size(); ++j) {
+    for (int i=0; i<hiddenLayers + 1; ++i) {
+        for (size_t j=0; j<vecLayers[i].vNodes.size(); ++j) {
             count += vecLayers[i].vNodes[j].vWeights.size();
         }
     }
@@ -43,9 +43,9 @@ int NeuralNetwork::GetNumWeights() const {
 void NeuralNetwork::SetWeights(const std::vector<double> &weights) {
     int count = 0;
 
-    for (int i=0; i<hiddenLayers; ++i) {
-        for (int j=0; j<vecLayers[i].vNodes.size(); ++j) {
-            for (int k=0; k<vecLayers[i].vNodes[j].vWeights.size(); ++k) {
+    for (int i=0; i<hiddenLayers + 1; ++i) {
+        for (size_t j=0; j<vecLayers[i].vNodes.size(); ++j) {
+            for (size_t k=0; k<vecLayers[i].vNodes[j].vWeights.size(); ++k) {
                 vecLayers[i].vNodes[j].vWeights[k] = weights[count++];
             }
         }
@@ -61,17 +61,19 @@ std::vector<double> NeuralNetwork::Calculate(const std::vector<double> &inputs) 
         if (i>0) in = out;
         out.clear();
 
-        for (int j=0; j<vecLayers[i].vNodes.size(); ++j) {
+        for (size_t j=0; j<vecLayers[i].vNodes.size(); ++j) {
             double total = 0;
-            for (int k=0; k<vecLayers[i].vNodes[j].vWeights.size(); ++k) {
+            for (size_t k=0; k<vecLayers[i].vNodes[j].vWeights.size(); ++k) {
                 total += vecLayers[i].vNodes[j].vWeights[k] * in[count++];
             }
 
-            if (j != vecLayers[i].vNodes.size() - 1) {
+            // if (i != hiddenLayers) {
                 out.push_back(Sigmoid(total));
-            } else {
-                out.push_back(ReLU(total));
-            }
+            // } else {
+                // out.push_back(ReLU(total));
+            // }
+
+            count = 0;
         }
 
     }

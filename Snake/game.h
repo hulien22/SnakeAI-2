@@ -43,11 +43,17 @@ public:
         return snake.front();
     }
 
+    inline int getFacing() {
+        return facing;
+    }
+
     inline const std::deque<Point> &getSnake() {
         return snake;
     }
 
     std::vector<double> getInputVector() const;
+
+    void reset(int s);
 private:
     void moveFruit();
 

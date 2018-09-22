@@ -5,6 +5,8 @@
 #include "NeuralLayer.h"
 #include <vector>
 #include <algorithm>
+#include <cmath>
+#include <iostream>
 
 class NeuralNetwork {
 	int inputs;

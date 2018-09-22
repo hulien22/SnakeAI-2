@@ -2,13 +2,9 @@
 #ifndef _GENALGOH
 #define _GENALGOH
 
-// define macros
-#define MUTATION_RATE 0.2
-#define CROSSOVER_RATE 0.7
-#define ELITISM_RATE 0.5
-
 #include "NeuralNetwork.h"
 #include "Genome.h"
+#include "Settings.h"
 
 #include <vector>
 #include <utility>
@@ -23,7 +19,7 @@ class GeneticAlgorithm {
 	double mutationRate;
 	double crossoverRate;
 
-	double bestFitness;
+	Genome bestGenome;
 	
 	void crossover(Genome& g1, Genome& g2);
 
@@ -36,6 +32,10 @@ public:
 
 	void Step(std::vector<Genome>& pop);
 
+	// call after running Step()
+	const Genome& getBestGenomeOfGeneration() {
+		return bestGenome;
+	}
 };
 
 #endif

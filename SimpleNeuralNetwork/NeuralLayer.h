@@ -16,7 +16,7 @@ public:
 			vNodes.push_back(Node(weightsPerNode));
 	};
 
-	NeuralLayer(std::vector<std::vector<double>> weights) : nNodes(weights.size) {
+	NeuralLayer(std::vector<std::vector<double>> weights) : nNodes(weights.size()) {
 		for (int i = 0; i < nNodes; ++i)
 			vNodes.push_back(Node(weights[i]));
 	}
