@@ -1,10 +1,10 @@
 //main.cpp
 #include <iostream>
 #include <string>
-#include "board.h"
+#include "game.h"
 
 int main(int argc, char** argv) {
-    Board game = Board(10,10,4);
+    Game game = Game(10,10,4);
 
     std::string cmdString;
 
@@ -25,7 +25,28 @@ int main(int argc, char** argv) {
             case 'd':
                 dir = 3;
                 break;
-        
+
+            case 'c':
+            {
+                std::vector<double> weights = game.getInputVector();
+                int count = 0;
+                for (int i=-2; i<3; ++i) {
+                    for (int j=-2; j<3; ++j) {
+                        if (i==0 && j==0) {
+                            std::cout << "   ";
+                            continue;
+                        } else if (i==1 && j==0) {
+                            std::cout << "   ";
+                            continue; 
+                        }
+                        std::cout << weights[count++] << " ";
+                    }
+                    std::cout << std::endl;
+                }
+                std::cout << weights[count++] << " ";
+                std::cout << weights[count++] << std::endl;
+                continue;
+            }
             default:
                 break;
         }

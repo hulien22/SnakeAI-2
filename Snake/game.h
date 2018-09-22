@@ -1,12 +1,14 @@
-//board.h
-#ifndef _SNAKEBOARDH
-#define _SNAKEBOARDH
+//Game.h
+#ifndef _SNAKEGAMEH
+#define _SNAKEGAMEH
 
 #include "point.h"
 #include <deque>
 #include <algorithm>
 #include <stdlib.h>
 #include <time.h>
+#include <vector>
+#include <iostream>
 
 enum DIR {
     UP = 0,
@@ -15,7 +17,7 @@ enum DIR {
     RIGHT = 3
 };
 
-class Board {
+class Game {
     int height;
     int width;
 
@@ -27,7 +29,7 @@ class Board {
     Point fruit = Point(0,0);
 
 public:
-    Board(int h, int w, int s);
+    Game(int w, int h, int s);
 
     bool move(int dir);
 
@@ -44,6 +46,8 @@ public:
     inline const std::deque<Point> &getSnake() {
         return snake;
     }
+
+    std::vector<double> getInputVector() const;
 private:
     void moveFruit();
 
