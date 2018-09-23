@@ -1,6 +1,5 @@
 #include "SimpleNeuralNetwork/Settings.h"
 #include "SimpleNeuralNetwork/GeneticAlgorithm.h"
-#include "SimpleNeuralNetwork/NeuralNetwork.h"
 #include "Snake/game.h"
 
 #include <fstream>
