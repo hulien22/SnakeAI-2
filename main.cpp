@@ -3,8 +3,53 @@
 #include "Snake/game.h"
 
 #include <fstream>
+#include <string>
 
-int main(int argc, char** argv) {
+#include <Windows.h>
+
+void runGame(std::string file) {
+    // initialize random seed
+    srand (time(NULL));
+    Game game = Game(BOARD_X,BOARD_Y,INITIAL_SNAKE_SIZE);
+    NeuralNetwork nnet = NeuralNetwork(NUMBER_OF_INPUTS,NUMBER_OF_OUTPUTS,HIDDEN_LAYERS,HIDDEN_LAYER_SIZE);
+
+    // get weights from file, file must be formatted as space separated doubles
+    std::vector<double> weights(nnet.GetNumWeights());
+    double d;
+    std::ifstream fs(file);
+    while (fs.is_open()) {
+        for (size_t i=0; i<weights.size(); ++i) {
+            fs >> d;
+            weights[i] = d;
+        }
+        fs.close();
+    }
+
+    nnet.SetWeights(weights);
+
+    int facing = 0;
+    int steps = 0;
+    do {
+        Sleep(50);
+        std::cout << game.toString() << "total steps: " << steps++ << " | size: " << game.getSize() << std::endl;
+        std::vector<double> outputs = nnet.Calculate(game.getInputVector());
+        facing = game.getFacing();
+        // 3 outputs
+        if (outputs[0] > outputs[1] && outputs[0] > outputs[2]) {
+            ++facing; //turn left
+        } else if (outputs[2] > outputs[0] && outputs[2] > outputs[1]) {
+            --facing; //turn right
+        } //else go straight
+        facing = (facing % 4 + 4) % 4;
+    }
+    while (game.move(facing));
+
+    std::cout << game.toString() << "total steps: " << steps++ << " | size: " << game.getSize() << std::endl;
+    
+    std::cout << "game over." << std::endl;
+}
+
+void trainNnet() {
     // initialize random seed
     srand (time(NULL));
 
@@ -48,7 +93,7 @@ int main(int argc, char** argv) {
 
                 game.reset(INITIAL_SNAKE_SIZE);
 
-                while(loop) {
+                while (loop) {
                     outputs = nnet.Calculate(game.getInputVector());
                     facing = game.getFacing();
                     // 3 outputs
@@ -114,14 +159,14 @@ int main(int argc, char** argv) {
         fs << "\n";
     }
     fs.close();
-
 }
 
-int calculateFitness(){
-    return 0;
+int main(int argc, char* argv[]) {
+    if (argc > 1) {
+        runGame(argv[1]);
+    } else {
+        trainNnet();
+    }
 }
-
-
-
 
 

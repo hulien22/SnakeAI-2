@@ -173,3 +173,17 @@ std::vector<double> Game::getInputVector() const {
     return vals;
 }
 
+std::string Game::toString() const {
+    std::string out = "";
+    for (int i=0; i<height; ++i) {
+        for (int j=0; j<width; ++j) {
+            if (fruit.x == j && fruit.y == i) out += "★";
+            else if (snake.front().x == j && snake.front().y == i) out += "@";
+            else if (std::find(snake.begin(), snake.end(), Point(j,i)) != snake.end()) out += "#";
+            else out += "-";
+        }
+        out += "\n";
+    }
+    return out;
+}
+
