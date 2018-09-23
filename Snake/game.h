@@ -9,6 +9,7 @@
 #include <time.h>
 #include <vector>
 #include <iostream>
+#include <string>
 
 enum DIR {
     UP = 0,
@@ -54,6 +55,8 @@ public:
     std::vector<double> getInputVector() const;
 
     void reset(int s);
+
+    std::string toString() const;
 private:
     void moveFruit();
 

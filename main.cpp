@@ -3,8 +3,54 @@
 #include "Snake/game.h"
 
 #include <fstream>
+#include <string>
 
-int main(int argc, char** argv) {
+#include <Windows.h>
+
+void runGame(std::string file, int timeout) {
+    // initialize random seed
+    srand (time(NULL));
+    Game game = Game(BOARD_X,BOARD_Y,INITIAL_SNAKE_SIZE);
+    NeuralNetwork nnet = NeuralNetwork(NUMBER_OF_INPUTS,NUMBER_OF_OUTPUTS,HIDDEN_LAYERS,HIDDEN_LAYER_SIZE);
+
+    // get weights from file, file must be formatted as space separated doubles
+    std::vector<double> weights(nnet.GetNumWeights());
+    double d;
+    std::ifstream fs(file);
+    while (fs.is_open()) {
+        for (size_t i=0; i<weights.size(); ++i) {
+            fs >> d;
+            weights[i] = d;
+        }
+        fs.close();
+    }
+
+    nnet.SetWeights(weights);
+
+    int facing = 0;
+    int steps = 0;
+    do {
+        Sleep(timeout);
+        std::cout << game.toString() << "total steps: " << steps++ << " | size: " << game.getSize() << std::endl;
+        std::vector<double> outputs = nnet.Calculate(game.getInputVector());
+        facing = game.getFacing();
+        // 3 outputs
+        if (outputs[0] > outputs[1] && outputs[0] > outputs[2]) {
+            ++facing; //turn left
+        } else if (outputs[2] > outputs[0] && outputs[2] > outputs[1]) {
+            --facing; //turn right
+        } //else go straight
+        std::cout << outputs[0] << " " << outputs[1] << " " << outputs[2] << " " << std::endl;
+        facing = (facing % 4 + 4) % 4;
+    }
+    while (game.move(facing));
+
+    std::cout << game.toString() << "total steps: " << steps++ << " | size: " << game.getSize() << std::endl;
+    
+    std::cout << "game over." << std::endl;
+}
+
+void trainNnet() {
     // initialize random seed
     srand (time(NULL));
 
@@ -43,26 +89,30 @@ int main(int argc, char** argv) {
             // we will run each genome through the game multiple times and take an average fitness
             for (int k=0; k<GAME_REPEATS; ++k) {
                 int steps = 0, totalSteps = 0, facing = 0, size = INITIAL_SNAKE_SIZE;
+                bool left = false, right = false;
                 bool validMove, loop = true;
                 std::vector<double> outputs(NUMBER_OF_OUTPUTS);
 
                 game.reset(INITIAL_SNAKE_SIZE);
 
-                while(loop) {
+                while (loop) {
                     outputs = nnet.Calculate(game.getInputVector());
                     facing = game.getFacing();
                     // 3 outputs
                     if (outputs[0] > outputs[1] && outputs[0] > outputs[2]) {
                         ++facing; //turn left
+                        left = true;
                     } else if (outputs[2] > outputs[0] && outputs[2] > outputs[1]) {
                         --facing; //turn right
+                        right = true;
                     } //else go straight
                     facing = (facing % 4 + 4) % 4;
                     validMove = game.move(facing);
                     ++steps;
 
                     if (!validMove) {
-                        fitnessAverage += (game.getSize() - INITIAL_SNAKE_SIZE) * (game.getSize() - INITIAL_SNAKE_SIZE) ;
+                        //require at least one left and right turn (more diverse and interesting movement)
+                        fitnessAverage += (game.getSize() - INITIAL_SNAKE_SIZE) * (game.getSize() - INITIAL_SNAKE_SIZE) * left * right;
                         loop = false;
                     } else {
                         if (game.getSize() > size) {
@@ -114,14 +164,14 @@ int main(int argc, char** argv) {
         fs << "\n";
     }
     fs.close();
-
 }
 
-int calculateFitness(){
-    return 0;
+int main(int argc, char* argv[]) {
+    if (argc > 2) {
+        runGame(argv[1], std::stoi(argv[2]));
+    } else {
+        trainNnet();
+    }
 }
-
-
-
 
 

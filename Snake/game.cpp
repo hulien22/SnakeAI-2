@@ -5,7 +5,7 @@ Game::Game(int w, int h, int s) : height(h), width(w), snakeSize(s), facing(DIR:
 
     //TODO initialize the snake (in different locations?)
     for (int i = 0; i < s; ++i) {
-        snake.push_front(Point(i,0));
+        snake.push_front(Point(i,height/2));
     }
     moveFruit();
 }
@@ -14,7 +14,7 @@ void Game::reset(int s){
     snake.clear();
     snakeSize = s;
     for (int i = 0; i < s; ++i) {
-        snake.push_front(Point(i,0));
+        snake.push_front(Point(i,height/2));
     }
     facing = DIR::RIGHT;
     moveFruit();
@@ -171,5 +171,19 @@ std::vector<double> Game::getInputVector() const {
     vals[24] = tempy;
 
     return vals;
+}
+
+std::string Game::toString() const {
+    std::string out = "";
+    for (int i=0; i<height; ++i) {
+        for (int j=0; j<width; ++j) {
+            if (fruit.x == j && fruit.y == i) out += "★";
+            else if (snake.front().x == j && snake.front().y == i) out += "@";
+            else if (std::find(snake.begin(), snake.end(), Point(j,i)) != snake.end()) out += "#";
+            else out += "-";
+        }
+        out += "\n";
+    }
+    return out;
 }
 
