@@ -89,6 +89,7 @@ void trainNnet() {
             // we will run each genome through the game multiple times and take an average fitness
             for (int k=0; k<GAME_REPEATS; ++k) {
                 int steps = 0, totalSteps = 0, facing = 0, size = INITIAL_SNAKE_SIZE;
+                bool left = false, right = false;
                 bool validMove, loop = true;
                 std::vector<double> outputs(NUMBER_OF_OUTPUTS);
 
@@ -100,15 +101,18 @@ void trainNnet() {
                     // 3 outputs
                     if (outputs[0] > outputs[1] && outputs[0] > outputs[2]) {
                         ++facing; //turn left
+                        left = true;
                     } else if (outputs[2] > outputs[0] && outputs[2] > outputs[1]) {
                         --facing; //turn right
+                        right = true;
                     } //else go straight
                     facing = (facing % 4 + 4) % 4;
                     validMove = game.move(facing);
                     ++steps;
 
                     if (!validMove) {
-                        fitnessAverage += (game.getSize() - INITIAL_SNAKE_SIZE) * (game.getSize() - INITIAL_SNAKE_SIZE) ;
+                        //require at least one left and right turn (more diverse and interesting movement)
+                        fitnessAverage += (game.getSize() - INITIAL_SNAKE_SIZE) * (game.getSize() - INITIAL_SNAKE_SIZE) * left * right;
                         loop = false;
                     } else {
                         if (game.getSize() > size) {
