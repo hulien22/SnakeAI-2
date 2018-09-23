@@ -15,6 +15,8 @@ public:
 
     std::vector<double> &getWeights() { return weights; };
 
+    const std::vector<double> &getWeights() const{ return weights; };
+
     const double getFitness() const { return fitness; };
     void setFitness(double f) { fitness = f; };
 

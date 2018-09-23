@@ -6,18 +6,17 @@ void GeneticAlgorithm::crossover(Genome& g1, Genome& g2) {
     double r = ((double) rand() / RAND_MAX);
     if (r > crossoverRate) return;
 
-    std::vector<double> weights1 = g1.getWeights();
-    std::vector<double> weights2 = g2.getWeights();
-
+    std::vector<double> &weights1 = g1.getWeights();
+    std::vector<double> &weights2 = g2.getWeights();
 
     int cut = rand()%chromosomeLength;
     for (size_t i=cut; i<weights1.size(); ++i) {
         std::swap(weights1[i],weights2[i]);
-    }
+    }    
 }
 
 void GeneticAlgorithm::mutate(Genome& g) {
-    std::vector<double> weights = g.getWeights();
+    std::vector<double> &weights = g.getWeights();
     for (size_t i=0; i<weights.size(); ++i) {
         double r = ((double) rand() / RAND_MAX);
         if (r < mutationRate)
@@ -59,8 +58,8 @@ void GeneticAlgorithm::Step(std::vector<Genome>& pop) {
         int g1 = rouletteWheelSelect(pop, reducedPopSize, totalFitness);
         int g2 = rouletteWheelSelect(pop, reducedPopSize, totalFitness);
         
-        pop.push_back(Genome(pop[g1]));
-        pop.push_back(Genome(pop[g2]));
+        pop.push_back(Genome(pop[g1].getWeights(), 0));
+        pop.push_back(Genome(pop[g2].getWeights(), 0));
         
         crossover(pop[pop.size()-2], pop[pop.size()-1]);
         mutate(pop[pop.size()-2]);

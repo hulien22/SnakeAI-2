@@ -67,11 +67,11 @@ std::vector<double> NeuralNetwork::Calculate(const std::vector<double> &inputs) 
                 total += vecLayers[i].vNodes[j].vWeights[k] * in[count++];
             }
 
-            // if (i != hiddenLayers) {
+            if (i != hiddenLayers) {
                 out.push_back(Sigmoid(total));
-            // } else {
-                // out.push_back(ReLU(total));
-            // }
+            } else {
+                out.push_back(ReLU(total));
+            }
 
             count = 0;
         }
