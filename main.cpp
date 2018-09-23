@@ -7,7 +7,7 @@
 
 #include <Windows.h>
 
-void runGame(std::string file) {
+void runGame(std::string file, int timeout) {
     // initialize random seed
     srand (time(NULL));
     Game game = Game(BOARD_X,BOARD_Y,INITIAL_SNAKE_SIZE);
@@ -30,7 +30,7 @@ void runGame(std::string file) {
     int facing = 0;
     int steps = 0;
     do {
-        Sleep(50);
+        Sleep(timeout);
         std::cout << game.toString() << "total steps: " << steps++ << " | size: " << game.getSize() << std::endl;
         std::vector<double> outputs = nnet.Calculate(game.getInputVector());
         facing = game.getFacing();
@@ -40,6 +40,7 @@ void runGame(std::string file) {
         } else if (outputs[2] > outputs[0] && outputs[2] > outputs[1]) {
             --facing; //turn right
         } //else go straight
+        std::cout << outputs[0] << " " << outputs[1] << " " << outputs[2] << " " << std::endl;
         facing = (facing % 4 + 4) % 4;
     }
     while (game.move(facing));
@@ -162,8 +163,8 @@ void trainNnet() {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc > 1) {
-        runGame(argv[1]);
+    if (argc > 2) {
+        runGame(argv[1], std::stoi(argv[2]));
     } else {
         trainNnet();
     }

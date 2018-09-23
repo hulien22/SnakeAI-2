@@ -5,7 +5,7 @@ Game::Game(int w, int h, int s) : height(h), width(w), snakeSize(s), facing(DIR:
 
     //TODO initialize the snake (in different locations?)
     for (int i = 0; i < s; ++i) {
-        snake.push_front(Point(i,0));
+        snake.push_front(Point(i,height/2));
     }
     moveFruit();
 }
@@ -14,7 +14,7 @@ void Game::reset(int s){
     snake.clear();
     snakeSize = s;
     for (int i = 0; i < s; ++i) {
-        snake.push_front(Point(i,0));
+        snake.push_front(Point(i,height/2));
     }
     facing = DIR::RIGHT;
     moveFruit();
