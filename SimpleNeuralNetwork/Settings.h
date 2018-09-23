@@ -11,7 +11,7 @@
 #define NUMBER_OF_OUTPUTS 3
 
 #define HIDDEN_LAYERS 4
-#define HIDDEN_LAYER_SIZE 4
+#define HIDDEN_LAYER_SIZE 10
 
 #define BOARD_X 20
 #define BOARD_Y 20
@@ -19,5 +19,8 @@
 
 #define POPULATION_SIZE 1000
 
+#define GAME_REPEATS 3
+
+#define TARGET_FITNESS 9000
 
 #endif

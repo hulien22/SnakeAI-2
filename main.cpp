@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
     GeneticAlgorithm ga = GeneticAlgorithm(POPULATION_SIZE,MUTATION_RATE,CROSSOVER_RATE);
     NeuralNetwork nnet = NeuralNetwork(NUMBER_OF_INPUTS,NUMBER_OF_OUTPUTS,HIDDEN_LAYERS,HIDDEN_LAYER_SIZE);
     
-    std::fstream fs;
+    std::ofstream fs;
 
     // create initial genomes
     std::vector<Genome> genomes;
@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
     // learning cycle
     int i = 0;
     int f = 0;
-    while (f < 9000) {
+    while (f < TARGET_FITNESS) {
         std::cout << "#########################################" << std::endl;
         std::cout << "Starting Generation " << i << "." << std::endl;
         std::cout << "#########################################" << std::endl;
@@ -38,14 +38,15 @@ int main(int argc, char** argv) {
             // std::cout << "*****************************************" << std::endl;
             // std::cout << "Training Species " << j << " of Generation " << i << "." << std::endl;
             double fitnessAverage = 0;
-            for (int k=0; k<5; ++k) {
+            nnet.SetWeights(genomes[j].getWeights());
+
+            // we will run each genome through the game multiple times and take an average fitness
+            for (int k=0; k<GAME_REPEATS; ++k) {
                 int steps = 0, totalSteps = 0, facing = 0, size = INITIAL_SNAKE_SIZE;
                 bool validMove, loop = true;
                 std::vector<double> outputs(NUMBER_OF_OUTPUTS);
 
                 game.reset(INITIAL_SNAKE_SIZE);
-
-                nnet.SetWeights(genomes[j].getWeights());
 
                 while(loop) {
                     outputs = nnet.Calculate(game.getInputVector());
@@ -61,9 +62,6 @@ int main(int argc, char** argv) {
                     ++steps;
 
                     if (!validMove) {
-                        // Fitness is based on survival time and size, size is weighted much more
-                        // genomes[j].setFitness(totalSteps + steps + 100*(game.getSize() - INITIAL_SNAKE_SIZE));
-                        
                         fitnessAverage += (game.getSize() - INITIAL_SNAKE_SIZE) * (game.getSize() - INITIAL_SNAKE_SIZE) ;
                         loop = false;
                     } else {
@@ -75,13 +73,10 @@ int main(int argc, char** argv) {
                         if (steps >= 100) loop = false; //not going anywhere, kill genome
                     }
                 }
-            
             }
-            genomes[j].setFitness(fitnessAverage/5.0);
-            // for (size_t q=0; q<genomes[j].getWeights().size(); ++q) {
-            //     std::cout << genomes[j].getWeights()[q] << ", ";
-            // }
-            // std::cout << std::endl;
+
+            genomes[j].setFitness(fitnessAverage/(GAME_REPEATS * 1.0));
+
             // std::cout << "Fitness Score: " << genomes[j].getFitness() << " | Genome took " << totalSteps + steps << " steps, and grew to a size of " << size << std::endl;
             // std::cout << "*****************************************" << std::endl;
         }
@@ -92,12 +87,12 @@ int main(int argc, char** argv) {
 
         //save best genome to file
         std::vector<double> bestweights = bestGenome.getWeights();
-        fs.open("out.txt", std::fstream::ate);
+        fs.open("out.txt", std::ios::app);
         fs << bestGenome.getFitness() << "| ";
         for (size_t j=0; j<bestweights.size(); ++j) {
             fs << bestweights[j] << " ";
         }
-        fs << std::endl;
+        fs << "\n";
         fs.close();
 
         std::cout << "#########################################" << std::endl;
@@ -110,13 +105,13 @@ int main(int argc, char** argv) {
     }
 
     //save all genomes to file
-    fs.open("final_out.txt", std::fstream::ate);
+    fs.open("final_out.txt", std::ios::app);
     for (int i=0; i<POPULATION_SIZE; ++i) {
         std::vector<double> w = genomes[i].getWeights();
         for (size_t j=0; j<w.size(); ++j) {
             fs << w[j] << " ";
         }
-        fs << std::endl;
+        fs << "\n";
     }
     fs.close();
 
