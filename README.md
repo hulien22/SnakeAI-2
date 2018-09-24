@@ -4,7 +4,7 @@ Using Genetic Algorithms and neural networks to develop an AI that plays the gam
 ![snake](recordings/snake.gif )
 
 ----------
-# Table of Contents
+## Table of Contents
 
 1. [About](#about)
 2. [Neural Network Design](#neural-network-design)
